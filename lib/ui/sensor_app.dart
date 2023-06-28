@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sensors_plus/sensors_plus.dart';
+import 'package:tilt_sensor/data/sensor_event.dart';
+import 'package:tilt_sensor/ui/sensor_view_model.dart';
 
 class SensorApp extends StatelessWidget {
-  const SensorApp({Key? key}) : super(key: key);
+  final viewModel = SensorViewModel();
+  SensorApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +19,8 @@ class SensorApp extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          StreamBuilder<AccelerometerEvent>(
-              stream: accelerometerEvents,
+          StreamBuilder<SensorEvent>(
+              stream: viewModel.eventStream,
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(
@@ -27,8 +29,6 @@ class SensorApp extends StatelessWidget {
                 }
 
                 final event = snapshot.data!;
-                List<double> accelerometerValues = [event.x, event.y, event.z];
-                print(accelerometerValues);
 
                 return Positioned(
                   left: centerX + event.y * 20,
